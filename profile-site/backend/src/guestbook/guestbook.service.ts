@@ -2,6 +2,8 @@ import { Injectable, NotFoundException, InternalServerErrorException } from '@ne
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateEntryDto, UpdateEntryDto } from './guestbook.dto';
 
+const TABLE = 'guestbook';
+
 @Injectable()
 export class GuestbookService {
   constructor(private supabase: SupabaseService) {}
@@ -9,8 +11,8 @@ export class GuestbookService {
   async findAll() {
     const { data, error } = await this.supabase
       .getClient()
-      .from('guestbook_entries')
-      .select('*')
+      .from(TABLE)
+      .select('id, name, message, created_at')
       .order('created_at', { ascending: false });
 
     if (error) throw new InternalServerErrorException(error.message);
@@ -20,8 +22,8 @@ export class GuestbookService {
   async findOne(id: string) {
     const { data, error } = await this.supabase
       .getClient()
-      .from('guestbook_entries')
-      .select('*')
+      .from(TABLE)
+      .select('id, name, message, created_at')
       .eq('id', id)
       .single();
 
@@ -32,9 +34,9 @@ export class GuestbookService {
   async create(dto: CreateEntryDto) {
     const { data, error } = await this.supabase
       .getClient()
-      .from('guestbook_entries')
-      .insert({ name: dto.name, email: dto.email, message: dto.message })
-      .select()
+      .from(TABLE)
+      .insert({ name: dto.name, message: dto.message })
+      .select('id, name, message, created_at')
       .single();
 
     if (error) throw new InternalServerErrorException(error.message);
@@ -46,10 +48,10 @@ export class GuestbookService {
 
     const { data, error } = await this.supabase
       .getClient()
-      .from('guestbook_entries')
-      .update({ message: dto.message, updated_at: new Date().toISOString() })
+      .from(TABLE)
+      .update({ message: dto.message })
       .eq('id', id)
-      .select()
+      .select('id, name, message, created_at')
       .single();
 
     if (error) throw new InternalServerErrorException(error.message);
@@ -61,7 +63,7 @@ export class GuestbookService {
 
     const { error } = await this.supabase
       .getClient()
-      .from('guestbook_entries')
+      .from(TABLE)
       .delete()
       .eq('id', id);
 

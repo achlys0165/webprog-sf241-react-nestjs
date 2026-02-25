@@ -4,10 +4,8 @@ import { getEntries, createEntry, updateEntry, deleteEntry } from '../lib/api';
 interface Entry {
   id: string;
   name: string;
-  email?: string;
   message: string;
   created_at: string;
-  updated_at?: string;
 }
 
 export default function Guestbook() {
@@ -19,7 +17,7 @@ export default function Guestbook() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editMessage, setEditMessage] = useState('');
 
-  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [form, setForm] = useState({ name: '', message: '' });
 
   const load = async () => {
     try {
@@ -41,7 +39,7 @@ export default function Guestbook() {
     setSuccess('');
     try {
       await createEntry(form);
-      setForm({ name: '', email: '', message: '' });
+      setForm({ name: '', message: '' });
       setSuccess('Your message was posted!');
       await load();
     } catch {
@@ -119,8 +117,7 @@ export default function Guestbook() {
           }}>
             Leave a Message
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
-            <div>
+          <div style={{ marginBottom: '1rem' }}>
               <label style={labelStyle}>Name *</label>
               <input
                 required
@@ -130,17 +127,6 @@ export default function Guestbook() {
                 style={inputStyle}
               />
             </div>
-            <div>
-              <label style={labelStyle}>Email (optional)</label>
-              <input
-                type="email"
-                value={form.email}
-                onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                placeholder="your@email.com"
-                style={inputStyle}
-              />
-            </div>
-          </div>
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={labelStyle}>Message *</label>
             <textarea

@@ -1,66 +1,45 @@
--- ============================
--- Supabase Database Setup
--- Run these in your Supabase SQL Editor
--- ============================
+-- ============================================================
+-- Supabase Setup — matches your existing "guestbook" table
+-- Run in: Supabase Dashboard → SQL Editor
+-- ============================================================
 
--- 1. PROFILE TABLE
-CREATE TABLE IF NOT EXISTS profile (
-  id SERIAL PRIMARY KEY,
-  name TEXT NOT NULL DEFAULT 'Your Name',
-  title TEXT DEFAULT 'Full-Stack Developer',
-  bio TEXT DEFAULT 'Welcome to my profile!',
-  location TEXT,
-  avatar_url TEXT,
-  github_url TEXT,
-  linkedin_url TEXT,
-  skills TEXT[] DEFAULT ARRAY[]::TEXT[],
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+-- Your table already exists with: id (uuid), name, message, created_at
+-- Just run this to enable RLS policies so the API can read/write:
 
--- Insert the default profile row
-INSERT INTO profile (id, name, title, bio, location, skills)
-VALUES (
-  1,
-  'Your Name',
-  'Full-Stack Developer',
-  'I build things for the web. Passionate about clean code, great UX, and making ideas come to life.',
-  'Manila, Philippines',
-  ARRAY['TypeScript', 'React', 'NestJS', 'PostgreSQL', 'Docker']
-)
-ON CONFLICT (id) DO NOTHING;
+ALTER TABLE guestbook ENABLE ROW LEVEL SECURITY;
 
--- 2. GUESTBOOK ENTRIES TABLE
-CREATE TABLE IF NOT EXISTS guestbook_entries (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
-  email TEXT,
-  message TEXT NOT NULL,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+CREATE POLICY "Allow public read"
+  ON guestbook FOR SELECT USING (true);
 
--- 3. ROW LEVEL SECURITY (RLS)
--- Enable RLS
-ALTER TABLE profile ENABLE ROW LEVEL SECURITY;
-ALTER TABLE guestbook_entries ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public insert"
+  ON guestbook FOR INSERT WITH CHECK (true);
 
--- Profile: allow read by anyone, write via service role only
-CREATE POLICY "Allow public read on profile"
-  ON profile FOR SELECT USING (true);
+CREATE POLICY "Allow public update"
+  ON guestbook FOR UPDATE USING (true);
 
-CREATE POLICY "Allow all on profile for anon"
-  ON profile FOR ALL USING (true);
+CREATE POLICY "Allow public delete"
+  ON guestbook FOR DELETE USING (true);
 
--- Guestbook: allow all operations via anon key
-CREATE POLICY "Allow public read on guestbook"
-  ON guestbook_entries FOR SELECT USING (true);
+-- ============================================================
+-- OPTIONAL: Add a profile table for dynamic Home page data
+-- ============================================================
 
-CREATE POLICY "Allow public insert on guestbook"
-  ON guestbook_entries FOR INSERT WITH CHECK (true);
-
-CREATE POLICY "Allow public update on guestbook"
-  ON guestbook_entries FOR UPDATE USING (true);
-
-CREATE POLICY "Allow public delete on guestbook"
-  ON guestbook_entries FOR DELETE USING (true);
+-- CREATE TABLE IF NOT EXISTS profile (
+--   id SERIAL PRIMARY KEY,
+--   name TEXT NOT NULL DEFAULT 'Your Name',
+--   title TEXT DEFAULT 'Full-Stack Developer',
+--   bio TEXT DEFAULT 'Welcome to my profile!',
+--   location TEXT,
+--   avatar_url TEXT,
+--   github_url TEXT,
+--   linkedin_url TEXT,
+--   skills TEXT[] DEFAULT ARRAY[]::TEXT[]
+-- );
+--
+-- INSERT INTO profile (id, name, title, bio, location, skills)
+-- VALUES (1, 'Your Name', 'Full-Stack Developer', 'I build things for the web.',
+--         'Manila, PH', ARRAY['TypeScript','React','NestJS'])
+-- ON CONFLICT (id) DO NOTHING;
+--
+-- ALTER TABLE profile ENABLE ROW LEVEL SECURITY;
+-- CREATE POLICY "Allow all on profile" ON profile FOR ALL USING (true);
