@@ -38,8 +38,8 @@ This project uses a monorepo structure. You will need two terminal windows to ru
 
 ### 1. Clone the Repository
 ```bash
-git clone <your-github-repo-url>
-cd <your-repo-name>
+git clone webprog-sf241-react-nestjs
+cd webprog-sf241-react-nestjs
 ```
 ### 2. Backend Setup (NestJS)
 
