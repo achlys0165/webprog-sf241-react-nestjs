@@ -13,12 +13,21 @@ export default function Guestbook() {
     fetchEntries();
   }, []);
 
-  const fetchEntries = async () => {
+const fetchEntries = async () => {
     try {
       const res = await axios.get(API_URL);
-      setEntries(res.data);
+      
+      // Safeguard: Check if the response is actually an array
+      if (Array.isArray(res.data)) {
+        setEntries(res.data);
+      } else {
+        // If it's not an array, log what the backend actually sent so we can fix it!
+        console.error("API did not return an array. It returned:", res.data);
+        setEntries([]); // Fallback to an empty array so the page doesn't crash
+      }
     } catch (error) {
       console.error("Error fetching entries:", error);
+      setEntries([]); // Fallback on error
     }
   };
 
