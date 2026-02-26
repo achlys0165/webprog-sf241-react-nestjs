@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// In Codespaces, requests to localhost usually get routed correctly by the forwarded ports
-const API_URL = 'http://localhost:3000/guestbook';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Guestbook() {
   const [entries, setEntries] = useState([]);
@@ -15,8 +14,12 @@ export default function Guestbook() {
   }, []);
 
   const fetchEntries = async () => {
-    const res = await axios.get(API_URL);
-    setEntries(res.data);
+    try {
+      const res = await axios.get(API_URL);
+      setEntries(res.data);
+    } catch (error) {
+      console.error("Error fetching entries:", error);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -44,41 +47,67 @@ export default function Guestbook() {
   };
 
   return (
-    <div>
-      <h2>Guestbook</h2>
+    <div className="guestbook-wrapper">
+      <header className="guestbook-header">
+        <h1>Terminal Guestbook</h1>
+        <p>Leave a trace in the system.</p>
+      </header>
       
-      <form onSubmit={handleSubmit} style={{ marginBottom: '2rem' }}>
-        <input 
-          type="text" 
-          placeholder="Your Name" 
-          value={name} 
-          onChange={(e) => setName(e.target.value)} 
-          required 
-          style={{ display: 'block', marginBottom: '0.5rem' }}
-        />
-        <textarea 
-          placeholder="Your Message" 
-          value={message} 
-          onChange={(e) => setMessage(e.target.value)} 
-          required
-          style={{ display: 'block', marginBottom: '0.5rem' }}
-        />
-        <button type="submit">{editingId ? 'Update Message' : 'Sign Guestbook'}</button>
-        {editingId && <button type="button" onClick={() => { setEditingId(null); setName(''); setMessage(''); }}>Cancel</button>}
+      <form className="guestbook-form" onSubmit={handleSubmit}>
+        <div className="input-group">
+          <input 
+            type="text" 
+            placeholder="System Alias (Name)" 
+            value={name} 
+            onChange={(e) => setName(e.target.value)} 
+            required 
+          />
+        </div>
+        <div className="input-group">
+          <textarea 
+            placeholder="Enter your transmission..." 
+            value={message} 
+            onChange={(e) => setMessage(e.target.value)} 
+            required
+            rows="4"
+          />
+        </div>
+        <div className="form-actions">
+          <button type="submit" className="btn-primary">
+            {editingId ? 'Update Transmission' : 'Send Transmission'}
+          </button>
+          {editingId && (
+            <button 
+              type="button" 
+              className="btn-secondary" 
+              onClick={() => { setEditingId(null); setName(''); setMessage(''); }}
+            >
+              Abort Edit
+            </button>
+          )}
+        </div>
       </form>
 
-      <div>
-        {entries.map(entry => (
-          <div key={entry.id} style={{ border: '1px solid #ccc', padding: '1rem', marginBottom: '1rem' }}>
-            <strong>{entry.name}</strong> 
-            <span style={{ fontSize: '0.8rem', color: 'gray', marginLeft: '1rem' }}>
-              {new Date(entry.created_at).toLocaleString()}
-            </span>
-            <p>{entry.message}</p>
-            <button onClick={() => handleEdit(entry)}>Edit</button>
-            <button onClick={() => handleDelete(entry.id)} style={{ marginLeft: '0.5rem', color: 'red' }}>Delete</button>
-          </div>
-        ))}
+      <div className="entries-container">
+        {entries.length === 0 ? (
+          <p className="no-entries">No transmissions found. Be the first.</p>
+        ) : (
+          entries.map(entry => (
+            <div key={entry.id} className="entry-card">
+              <div className="entry-header">
+                <strong>{entry.name}</strong>
+                <span className="entry-timestamp">
+                  {new Date(entry.created_at).toLocaleString()}
+                </span>
+              </div>
+              <p className="entry-message">{entry.message}</p>
+              <div className="entry-actions">
+                <button className="btn-edit" onClick={() => handleEdit(entry)}>Edit</button>
+                <button className="btn-delete" onClick={() => handleDelete(entry.id)}>Delete</button>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

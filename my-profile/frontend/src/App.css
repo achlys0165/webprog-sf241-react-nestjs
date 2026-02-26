@@ -1,42 +1,187 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
+/* Color Palette & Base Variables */
+:root {
+  --bg-dark: #0d1117;
+  --bg-card: #161b22;
+  --text-main: #c9d1d9;
+  --text-muted: #8b949e;
+  --accent: #58a6ff;
+  --accent-hover: #1f6feb;
+  --danger: #f85149;
+  --border: #30363d;
+  --font-mono: 'Courier New', Courier, monospace;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 800px;
   padding: 2rem;
+}
+
+/* Header */
+.guestbook-header {
   text-align: center;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.guestbook-header h1 {
+  font-size: 2.5rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--accent);
+  letter-spacing: -0.5px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.guestbook-header p {
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  margin: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Form Styles */
+.guestbook-form {
+  background-color: var(--bg-card);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
-.card {
-  padding: 2em;
+.input-group {
+  margin-bottom: 1rem;
 }
 
-.read-the-docs {
-  color: #888;
+input, textarea {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--bg-dark);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.3);
+}
+
+/* Buttons */
+.form-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+button {
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--text-muted);
+}
+
+/* Entries List */
+.no-entries {
+  text-align: center;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-style: italic;
+}
+
+.entry-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 0.5rem;
+}
+
+.entry-header strong {
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.entry-timestamp {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.entry-message {
+  line-height: 1.5;
+  white-space: pre-wrap;
+  margin-bottom: 1.5rem;
+}
+
+.entry-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.btn-edit {
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.btn-edit:hover {
+  color: var(--text-main);
+  border-color: var(--text-main);
+}
+
+.btn-delete {
+  background-color: transparent;
+  color: var(--danger);
+  border: 1px solid rgba(248, 81, 73, 0.4);
+}
+
+.btn-delete:hover {
+  background-color: var(--danger);
+  color: #fff;
 }
